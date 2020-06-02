@@ -23,7 +23,7 @@ type IData interface {
 
 // IApp App interface
 type IApp interface {
-	Err(err error) bool
+	IsError(err error) bool
 	GetToken(IUserDB) (IData, error)
 }
 
@@ -40,7 +40,7 @@ func Auther(app IApp, db IDB) func(w http.ResponseWriter, r *http.Request) {
 		username := r.PostForm.Get("username")
 		password := r.PostForm.Get("password")
 		User, err := db.Auth(username)
-		if app.Err(err) &&
+		if app.IsError(err) &&
 			!User.IsEqualPassword(password) {
 			sleeping := time.Duration(rand.Intn(max-min)+min) / 100 * time.Second
 			time.Sleep(sleeping)
